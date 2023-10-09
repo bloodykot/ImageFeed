@@ -1,6 +1,7 @@
 import UIKit
 final class ProfileViewController: UIViewController {
     
+    // MARK: - Private Properties
     private var avatarImage: UIImage!
     private var avatarImageView: UIImageView!
     private var nameLabel: UILabel!
@@ -10,6 +11,7 @@ final class ProfileViewController: UIViewController {
     private var logoutButtonImage: UIImage!
     private let customColor = UIColor(red: 174/255, green: 175/255, blue: 180/255, alpha: 1)
     
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         setAvatar()
@@ -19,6 +21,7 @@ final class ProfileViewController: UIViewController {
         setLogoutButton()
     }
     
+    // MARK: - Private Methods
     private func setAvatar() {
         avatarImage = UIImage(named: "avatar")
         avatarImageView = UIImageView(image: avatarImage)

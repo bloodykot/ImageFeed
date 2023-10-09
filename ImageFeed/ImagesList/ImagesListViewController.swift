@@ -9,12 +9,12 @@ import UIKit
 
 final class ImagesListViewController: UIViewController {
 
+    // MARK: - IB Outlets
     @IBOutlet private var tableView: UITableView!
     
+    // MARK: - Private Properties
     private let photosName: [String] = Array(0..<20).map{"\($0)"}
-    
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
-    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -22,6 +22,7 @@ final class ImagesListViewController: UIViewController {
         return formatter
     }()
     
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
@@ -29,16 +30,17 @@ final class ImagesListViewController: UIViewController {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ShowSingleImageSegueIdentifier {
-            let viewController = segue.destination as! SingleImageViewController
-            let indexPath = sender as! IndexPath
-            let image = UIImage(named: photosName[indexPath.row])
-            viewController.image = image
+            let viewController = segue.destination as? SingleImageViewController
+            let indexPath = sender as? IndexPath
+            let image = UIImage(named: photosName[indexPath?.row ?? 0])
+            viewController?.image = image
         } else {
             super.prepare(for: segue, sender: sender)
         }
     }
 }
 
+// MARK: - UITableViewDataSource
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photosName.count
@@ -67,9 +69,9 @@ extension ImagesListViewController: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
         performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
     }
         
