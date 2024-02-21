@@ -194,6 +194,7 @@
 		1FF519942AC0A9F200E6FE10 /* ImageFeed */ = {
 			isa = PBXGroup;
 			children = (
+				1FF519A92AC0C25B00E6FE10 /* Resources */,
 				1FF519952AC0A9F200E6FE10 /* AppDelegate.swift */,
 				1FF519972AC0A9F200E6FE10 /* SceneDelegate.swift */,
 				1F28CA5B2ACB399400A211B2 /* Constants.swift */,
