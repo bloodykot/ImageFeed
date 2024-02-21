@@ -1,17 +1,19 @@
 import UIKit
 
 final class ProfileImageService {
+    // MARK: - Public Properties
     static let shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
+    // MARK: - Private Properties
     private var currentTask: URLSessionTask?
-    
     private(set) var avatarURL: URL?
-    
     private let urlBuilder = URLRequestBuilder.shared
     
+    // MARK: - Initializers
     private init() {}
     
+    // MARK: - Public Methods
     func fetchProfileImageURL(userName: String, completion: @escaping (Result<String, Error>) -> Void) {
         assert(Thread.isMainThread)
         
@@ -38,24 +40,11 @@ final class ProfileImageService {
         }
     }
     
+    // MARK: - Private Methods
     private func makeFetchProfileImageRequest(userName: String) -> URLRequest? {
         urlBuilder.makeHTTPRequest(
             path: "/users/\(userName)",
             httpMethod: "GET",
             baseURLString: Constants.defaultAPIBaseURLString)
     }
-    
-    private func fetch(
-        for request: URLRequest,
-        completion: @escaping (Result<ProfileResult, Error>) -> Void) -> URLSessionTask {
-            let decoder = JSONDecoder()
-            let urlSession = URLSession.shared
-            return urlSession.objectTask(for: request) { (result: Result<Data, Error>) in
-                let response = result.flatMap { data -> Result<ProfileResult, Error> in
-                    Result {try decoder.decode(ProfileResult.self, from: data)}
-                }
-                completion(response)
-            }
-        }
-    
 }

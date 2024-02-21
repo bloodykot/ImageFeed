@@ -1,5 +1,6 @@
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     
@@ -15,6 +16,7 @@ final class ProfileViewController: UIViewController {
     private let oAuth2Token = OAuth2TokenStorage.shared.token!
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileImageService = ProfileImageService.shared
+    private let alertPresenter = AlertPresenter()
     
     // MARK: - Overrides Methods
     override func viewDidLoad() {
@@ -25,6 +27,8 @@ final class ProfileViewController: UIViewController {
         setLoginName()
         setDescriptionLabel()
         setLogoutButton()
+        
+        alertPresenter.delegate = self
         
         if let url = profileImageService.avatarURL {
             updateAvatar(url: url)
@@ -136,7 +140,7 @@ final class ProfileViewController: UIViewController {
     
     @objc
     private func didTapLogoutButton() {
-        print("Logout button tapped")
+        showLogout()
     }
     
     //@objc
@@ -160,6 +164,35 @@ final class ProfileViewController: UIViewController {
             with: url,
             placeholder: UIImage(named: "avatar_placeholder"),
             options: [.processor(processor)])
+    }
+    
+    private func switchToSplashViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid Configuration")
+            return
+        }
+        window.rootViewController = SplashViewController()
+    }
+    
+    //MARK: 12 sprint
+    private func showLogout() {
+        alertPresenter.showAlertForLogout(
+            title: "Пока, пока!",
+            message: "Уверены, что хотите выйдти?") { [weak self] in
+                guard let self = self else { return }
+                cleanTokenAndCookie()
+                switchToSplashViewController()
+            }
+    }
+    
+    private func cleanTokenAndCookie() {
+        OAuth2TokenStorage.shared.tokenReset()
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
     }
 }
 

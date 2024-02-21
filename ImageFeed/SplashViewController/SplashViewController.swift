@@ -1,6 +1,7 @@
 import UIKit
 
 final class SplashViewController: UIViewController {
+    
     // MARK: - Private Properties
     private let ShowAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     private let oauth2Service = OAuth2Service()
@@ -22,6 +23,8 @@ final class SplashViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        guard UIBlockingProgressHUD.isShowing == false else { return }
         checkAuthStatus()
     }
     
@@ -35,7 +38,6 @@ final class SplashViewController: UIViewController {
     }
     
     // MARK: - Private Methods
-    
     private func switchToTabBarController() {
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)

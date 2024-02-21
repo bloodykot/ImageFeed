@@ -1,21 +1,22 @@
 import UIKit
 
 final class ProfileService {
+    // MARK: - Public Properties
     static let shared = ProfileService()
     
+    // MARK: - Private Properties
     private let builder: URLRequestBuilder
-    
     private(set) var profile: Profile?
-    
     private var currentTask: URLSessionTask?
-    
     private let urlSession: URLSession
     
+    // MARK: - Initializers
     private init(builder: URLRequestBuilder = .shared, urlSession: URLSession = .shared) {
         self.builder = builder
         self.urlSession = urlSession
     }
     
+    // MARK: - Public Methods
     func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
         currentTask?.cancel()
         guard let request = makeFetchProfileRequest() else {
@@ -37,22 +38,10 @@ final class ProfileService {
         }
     }
     
+    // MARK: - Private Methods
     private func makeFetchProfileRequest( ) -> URLRequest? {
         builder.makeHTTPRequest(
             path: "/me",
             httpMethod: "GET")
     }
-    
-    private func fetch(
-        for request: URLRequest,
-        completion: @escaping (Result<ProfileResult, Error>) -> Void) -> URLSessionTask {
-            let decoder = JSONDecoder()
-            let urlSession = URLSession.shared
-            return urlSession.objectTask(for: request) { (result: Result<Data, Error>) in
-                let response = result.flatMap { data -> Result<ProfileResult, Error> in
-                    Result {try decoder.decode(ProfileResult.self, from: data)}
-                }
-                completion(response)
-            }
-        }    
 }

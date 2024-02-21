@@ -16,4 +16,8 @@ final class OAuth2TokenStorage {
             keychainWrapper.set(newValue, forKey: Constants.bearerToken)
         }
     }
+    
+    func tokenReset() {
+        keychainWrapper.removeAllKeys()
+    }
 }

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F06FD9B2B86009100B958A7 /* ImagesListStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F06FD9A2B86009100B958A7 /* ImagesListStructures.swift */; };
+		1F06FD9D2B8600C000B958A7 /* DateFormatterSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F06FD9C2B8600C000B958A7 /* DateFormatterSingleton.swift */; };
 		1F28CA572AC603E600A211B2 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F28CA562AC603E600A211B2 /* ProfileViewController.swift */; };
 		1F28CA592AC6D96E00A211B2 /* SingleImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F28CA582AC6D96E00A211B2 /* SingleImageViewController.swift */; };
 		1F28CA5C2ACB399400A211B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F28CA5B2ACB399400A211B2 /* Constants.swift */; };
@@ -25,8 +27,7 @@
 		1F28CA7E2AE1A3A000A211B2 /* AlertPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F28CA7D2AE1A3A000A211B2 /* AlertPresenter.swift */; };
 		1F4548CF2AE4517A00D95243 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1F4548CE2AE4517A00D95243 /* Kingfisher */; };
 		1F4548D12AE46E5B00D95243 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4548D02AE46E5B00D95243 /* TabBarViewController.swift */; };
-		1F4548D52AE5A56700D95243 /* ImageListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4548D42AE5A56700D95243 /* ImageListService.swift */; };
-		1F4548D72AE5A64600D95243 /* ImageListStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4548D62AE5A64600D95243 /* ImageListStructures.swift */; };
+		1F4548D52AE5A56700D95243 /* ImagesListService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F4548D42AE5A56700D95243 /* ImagesListService.swift */; };
 		1FE173172AE3B53100C3C793 /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FE173162AE3B53100C3C793 /* ProfileImageService.swift */; };
 		1FF519962AC0A9F200E6FE10 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF519952AC0A9F200E6FE10 /* AppDelegate.swift */; };
 		1FF519982AC0A9F200E6FE10 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF519972AC0A9F200E6FE10 /* SceneDelegate.swift */; };
@@ -38,6 +39,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1F06FD9A2B86009100B958A7 /* ImagesListStructures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesListStructures.swift; sourceTree = "<group>"; };
+		1F06FD9C2B8600C000B958A7 /* DateFormatterSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterSingleton.swift; sourceTree = "<group>"; };
 		1F28CA562AC603E600A211B2 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		1F28CA582AC6D96E00A211B2 /* SingleImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleImageViewController.swift; sourceTree = "<group>"; };
 		1F28CA5B2ACB399400A211B2 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -53,8 +56,7 @@
 		1F28CA7B2ADC658D00A211B2 /* URLRequestBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLRequestBuilder.swift; sourceTree = "<group>"; };
 		1F28CA7D2AE1A3A000A211B2 /* AlertPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenter.swift; sourceTree = "<group>"; };
 		1F4548D02AE46E5B00D95243 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
-		1F4548D42AE5A56700D95243 /* ImageListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImageListService.swift; path = ImageFeed/ImageListService.swift; sourceTree = SOURCE_ROOT; };
-		1F4548D62AE5A64600D95243 /* ImageListStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListStructures.swift; sourceTree = "<group>"; };
+		1F4548D42AE5A56700D95243 /* ImagesListService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ImagesListService.swift; path = ImageFeed/ServiceAccessLayer/ImageList/ImagesListService.swift; sourceTree = SOURCE_ROOT; };
 		1FE173162AE3B53100C3C793 /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
 		1FF519922AC0A9F200E6FE10 /* ImageFeed.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageFeed.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1FF519952AC0A9F200E6FE10 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -166,8 +168,9 @@
 		1F4548D32AE5A53100D95243 /* ImageList */ = {
 			isa = PBXGroup;
 			children = (
-				1F4548D42AE5A56700D95243 /* ImageListService.swift */,
-				1F4548D62AE5A64600D95243 /* ImageListStructures.swift */,
+				1F4548D42AE5A56700D95243 /* ImagesListService.swift */,
+				1F06FD9A2B86009100B958A7 /* ImagesListStructures.swift */,
+				1F06FD9C2B8600C000B958A7 /* DateFormatterSingleton.swift */,
 			);
 			path = ImageList;
 			sourceTree = "<group>";
@@ -302,7 +305,7 @@
 			files = (
 				1FF5199A2AC0A9F200E6FE10 /* ImagesListViewController.swift in Sources */,
 				1F28CA592AC6D96E00A211B2 /* SingleImageViewController.swift in Sources */,
-				1F4548D52AE5A56700D95243 /* ImageListService.swift in Sources */,
+				1F4548D52AE5A56700D95243 /* ImagesListService.swift in Sources */,
 				1F28CA6A2AD0907400A211B2 /* OAuth2Service.swift in Sources */,
 				1F28CA6C2AD16CDF00A211B2 /* URLRequest.swift in Sources */,
 				1FF519CB2AC34EE900E6FE10 /* ImagesListCell.swift in Sources */,
@@ -311,13 +314,14 @@
 				1F28CA7E2AE1A3A000A211B2 /* AlertPresenter.swift in Sources */,
 				1F28CA792ADC49C300A211B2 /* ProfileStructures.swift in Sources */,
 				1F28CA5E2ACB537500A211B2 /* AuthViewController.swift in Sources */,
+				1F06FD9B2B86009100B958A7 /* ImagesListStructures.swift in Sources */,
 				1F28CA5C2ACB399400A211B2 /* Constants.swift in Sources */,
 				1FE173172AE3B53100C3C793 /* ProfileImageService.swift in Sources */,
 				1FF519962AC0A9F200E6FE10 /* AppDelegate.swift in Sources */,
 				1F4548D12AE46E5B00D95243 /* TabBarViewController.swift in Sources */,
 				1F28CA7C2ADC658D00A211B2 /* URLRequestBuilder.swift in Sources */,
+				1F06FD9D2B8600C000B958A7 /* DateFormatterSingleton.swift in Sources */,
 				1F28CA612ACB556C00A211B2 /* WebViewViewController.swift in Sources */,
-				1F4548D72AE5A64600D95243 /* ImageListStructures.swift in Sources */,
 				1FF519982AC0A9F200E6FE10 /* SceneDelegate.swift in Sources */,
 				1F28CA632AD08F5400A211B2 /* SplashViewController.swift in Sources */,
 				1F28CA712AD6635800A211B2 /* UIBlockingProgressHUD.swift in Sources */,

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ProgressHUD
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        ProgressHUD.animationType = .systemActivityIndicator        //12-й спринт
+        ProgressHUD.colorHUD = .black                               //12-й спринт
+        ProgressHUD.colorAnimation = .lightGray                     //12-й спринт
         return true
     }
 

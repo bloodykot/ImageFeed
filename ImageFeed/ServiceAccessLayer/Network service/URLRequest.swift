@@ -1,21 +1,5 @@
 import Foundation
 
-// MARK: - HTTP Request
-extension URLRequest {
-    static func makeHTTPRequest(
-        path: String,
-        httpMethod: String,
-        baseURL: URL = URL(string: Constants.defaultAPIBaseURLString)!
-    ) -> URLRequest {
-        var request = URLRequest(url: URL(string: path, relativeTo: baseURL)!)
-        request.httpMethod = httpMethod
-        if let token = OAuth2TokenStorage.shared.token {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-        return request
-    }
-}
-
 // MARK: - Network Connection
 enum NetworkError: Error {
     case decodingError(Error)
@@ -50,6 +34,34 @@ extension URLSession {
         let task = dataTask(with: request, completionHandler: { data, response, error in
             if let data = data,
                let response = response,
+               let statusCode = (response as? HTTPURLResponse)?.statusCode
+            {
+                if 200..<300 ~= statusCode {
+                    fulfillCompletionOnMainThread(.success(data))
+                } else {
+                    fulfillCompletionOnMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
+                }
+            } else if let error = error {
+                fulfillCompletionOnMainThread(.failure(NetworkError.urlRequestError(error)))
+            } else {
+                fulfillCompletionOnMainThread(.failure(NetworkError.urlSessionError))
+            }
+        })
+        task.resume()
+        return task
+    }
+    
+    func postOrDeleteLike(
+        for request: URLRequest,
+        completion: @escaping (Result<Void, Error>) -> Void) -> URLSessionTask {
+        let fulfillCompletionOnMainThread: (Result<Void, Error>) -> Void = { result in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+        let task = dataTask(with: request, completionHandler: { data, response, error in
+            let data: Void
+            if let response = response,
                let statusCode = (response as? HTTPURLResponse)?.statusCode
             {
                 if 200..<300 ~= statusCode {

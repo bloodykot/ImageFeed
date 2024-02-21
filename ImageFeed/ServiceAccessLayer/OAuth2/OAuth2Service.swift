@@ -14,6 +14,7 @@ final class OAuth2Service {
     private var currentTask: URLSessionTask?
     private var lastCode: String?
     
+    // MARK: - Initializers
     init(
         urlSession: URLSession = .shared,
         storage: OAuth2TokenStorage = .shared,

@@ -1,7 +1,7 @@
 import UIKit
+import Kingfisher
 
 final class SingleImageViewController: UIViewController {
-    
     // MARK: - IB Outlets
     @IBOutlet var imageView: UIImageView!
     
@@ -16,6 +16,9 @@ final class SingleImageViewController: UIViewController {
         }
     }
     
+    // MARK: - Private Properties
+    private let alertPresenter = AlertPresenter()
+    
     // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +26,8 @@ final class SingleImageViewController: UIViewController {
         scrollView.maximumZoomScale = 1.25
         imageView.image = image
         rescaleAndCenterImageInScrollView(image: image!)
+        alertPresenter.delegate = self
+        downloadFullImage()
     }
     
     // MARK: - IB Actions
@@ -36,6 +41,22 @@ final class SingleImageViewController: UIViewController {
     }
     
     // MARK: - Private Methods
+    private func downloadFullImage() {
+        let fullImageURL = ImagesListService.shared.getLargeImageURL()
+        UIBlockingProgressHUD.show()
+        imageView.kf.setImage(with: fullImageURL) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            switch result {
+            case .success(let imageResult):
+                self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+            case .failure:
+                self.showError()
+            }
+        }
+    }
+    
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
@@ -51,6 +72,15 @@ final class SingleImageViewController: UIViewController {
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
+    }
+    
+    private func showError() {
+        alertPresenter.showAlertForLargeImage(
+            title: "Ошибка",
+            message: "Что-то пошло не так. Попробовать ещё раз?") { [weak self] in
+                guard let self = self else { return }
+                downloadFullImage()
+            }
     }
 }
 
