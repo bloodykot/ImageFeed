@@ -19,8 +19,8 @@ final class ImagesListCell: UITableViewCell {
     
     // MARK: - Public Methods
     func setIsLiked(_ status: Bool) {
-        //let newStatus = !status
         let likeImage = status ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
+        
         likeButton.setImage(likeImage, for: .normal)
     }
     

@@ -17,7 +17,12 @@ final class ProfileService {
     }
     
     // MARK: - Public Methods
-    func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) {
+    func fetchProfile(useMockDataIn testMode: Bool, completion: @escaping (Result<Profile, Error>) -> Void) {
+        guard testMode == false else {
+            profile = MockDataProfile().profile
+            completion(.success(profile!))
+            return
+        }
         currentTask?.cancel()
         guard let request = makeFetchProfileRequest() else {
             assertionFailure("Invalid request")

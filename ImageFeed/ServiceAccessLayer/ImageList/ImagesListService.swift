@@ -17,8 +17,25 @@ final class ImagesListService {
     private init() {}
     
     // MARK: - Public Methods
-    func fetchPhotosNextPage(completion: @escaping (Result<Photo, Error>) -> Void) {
+    func fetchPhotosNextPage(useMockDataIn testMode: Bool, completion: @escaping (Result<Photo, Error>) -> Void) {
         assert(Thread.isMainThread)
+        guard testMode == false else {
+            DispatchQueue.main.async {
+                for siglePhoto in MockPhoto().photos {
+                    self.photos.append(siglePhoto)
+                    if self.lastLoadedPage != nil {
+                        self.lastLoadedPage! += 1
+                    } else {
+                        self.lastLoadedPage = 1
+                    }
+                }
+                NotificationCenter.default.post(
+                    name: ImagesListService.didChangeNotification,
+                    object: self)
+            }
+            return
+        }
+        
         let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
         if currentTask != nil {
             return
@@ -53,8 +70,16 @@ final class ImagesListService {
         }
     }
     
-    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Bool, Error>) -> Void) {
+    func changeLike(photoId: String, isLike: Bool, useMockDataIn testMode: Bool, _ completion: @escaping (Result<Bool, Error>) -> Void) {
         assert(Thread.isMainThread)
+        guard testMode == false else {
+            DispatchQueue.main.async {
+                self.photos[Int(photoId)!-1].isLiked.toggle()
+                completion(.success(true))
+            }
+            
+            return
+        }
         let request: URLRequest
         if currentTask != nil {
             return

@@ -2,18 +2,28 @@ import UIKit
 import Kingfisher
 import WebKit
 
-final class ProfileViewController: UIViewController {
+public protocol ProfileViewControllerProtocol: AnyObject {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func isViewLoaded() -> Bool
+    func updateAvatar(url: URL)
+    func setProfileInfo()
+    func switchToSplashViewController()
+}
+
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
+    // MARK: - Public Properties
+    var presenter: ProfileViewPresenterProtocol?
+    var testMode: Bool = false
     
     // MARK: - Private Properties
     private var avatarImage: UIImage!
     private var avatarImageView: UIImageView!
-    private var nameLabel: UILabel!
-    private var loginNameLabel: UILabel!
-    private var descriptionLabel: UILabel!
+    private(set) var nameLabel: UILabel!
+    private(set) var loginNameLabel: UILabel!
+    private(set) var descriptionLabel: UILabel!
     private var logoutButton: UIButton!
     private var logoutButtonImage: UIImage!
-    private let profileService = ProfileService.shared
-    private let oAuth2Token = OAuth2TokenStorage.shared.token!
+    private(set) var avatarURL: URL? = nil
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileImageService = ProfileImageService.shared
     private let alertPresenter = AlertPresenter()
@@ -22,6 +32,8 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Constants.ypBlack
+        presenter?.viewDidLoad()
+        
         setAvatar()
         setNameLabel()
         setLoginName()
@@ -29,32 +41,49 @@ final class ProfileViewController: UIViewController {
         setLogoutButton()
         
         alertPresenter.delegate = self
-        
-        if let url = profileImageService.avatarURL {
-            updateAvatar(url: url)
+        guard testMode == false else {
+            viewWillAppear(true)
+            return
         }
-        
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main) { [weak self] notification in
-                self?.updateAvatar(notification: notification)
-            }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        guard let profile = ProfileService.shared.profile else {
-            assertionFailure("No saved profile")
+        presenter?.viewWillAppear(animated)
+    }
+    
+    func isViewLoaded() -> Bool {
+        return isViewLoaded
+    }
+    
+    func setProfileInfo() {
+        nameLabel.text = presenter?.nameLabel
+        descriptionLabel.text = presenter?.descriptionLabel
+        loginNameLabel.text = presenter?.loginNameLabel
+    }
+    
+    func updateAvatar(url: URL) {
+        guard testMode == false else {
+            avatarURL = url
             return
         }
-        nameLabel.text = profile.name
-        descriptionLabel.text = profile.bio
-        loginNameLabel.text = profile.loginName
-        
-        profileImageService.fetchProfileImageURL(userName: profile.username) { _ in
-            //no completion
+        let cache = ImageCache.default
+        cache.clearMemoryCache()
+        cache.clearDiskCache()
+        avatarImageView.kf.indicatorType = .activity
+        let processor = RoundCornerImageProcessor(cornerRadius: 61)
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(named: "avatar_placeholder"),
+            options: [.processor(processor)])
+    }
+    
+    func switchToSplashViewController() {
+        guard let window = UIApplication.shared.windows.first else {
+            assertionFailure("Invalid Configuration")
+            return
         }
+        window.rootViewController = SplashViewController()
     }
     
     // MARK: - Private Methods
@@ -87,6 +116,7 @@ final class ProfileViewController: UIViewController {
             nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             nameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 16)
         ])
+        nameLabel.accessibilityIdentifier = "nameLabel"
     }
     
     private func setLoginName() {
@@ -102,6 +132,7 @@ final class ProfileViewController: UIViewController {
             loginNameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             loginNameLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 16)
         ])
+        loginNameLabel.accessibilityIdentifier = "loginNameLabel"
     }
     
     private func setDescriptionLabel() {
@@ -126,6 +157,7 @@ final class ProfileViewController: UIViewController {
             target: self,
             action: #selector(self.didTapLogoutButton)
         )
+        logoutButton.accessibilityIdentifier = "logout button"
         logoutButton.tintColor = Constants.ypRed
         view.addSubview(logoutButton)
         logoutButton.translatesAutoresizingMaskIntoConstraints = false
@@ -143,56 +175,14 @@ final class ProfileViewController: UIViewController {
         showLogout()
     }
     
-    //@objc
-    private func updateAvatar(notification: Notification) {
-        guard
-            isViewLoaded,
-            let userInfo = notification.userInfo,
-            let profileImageURL = userInfo["URL"] as? String,
-            let url = URL(string: profileImageURL)
-        else { return }
-        updateAvatar(url: url)
-    }
-    
-    private func updateAvatar(url: URL) {
-        let cache = ImageCache.default
-        cache.clearMemoryCache()
-        cache.clearDiskCache()
-        avatarImageView.kf.indicatorType = .activity
-        let processor = RoundCornerImageProcessor(cornerRadius: 61)
-        avatarImageView.kf.setImage(
-            with: url,
-            placeholder: UIImage(named: "avatar_placeholder"),
-            options: [.processor(processor)])
-    }
-    
-    private func switchToSplashViewController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid Configuration")
-            return
-        }
-        window.rootViewController = SplashViewController()
-    }
-    
-    //MARK: 12 sprint
     private func showLogout() {
         alertPresenter.showAlertForLogout(
             title: "Пока, пока!",
             message: "Уверены, что хотите выйдти?") { [weak self] in
                 guard let self = self else { return }
-                cleanTokenAndCookie()
+                presenter?.cleanTokenAndCookie()
                 switchToSplashViewController()
             }
-    }
-    
-    private func cleanTokenAndCookie() {
-        OAuth2TokenStorage.shared.tokenReset()
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-            }
-        }
     }
 }
 

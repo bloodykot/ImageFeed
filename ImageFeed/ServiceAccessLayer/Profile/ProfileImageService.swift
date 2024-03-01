@@ -14,7 +14,17 @@ final class ProfileImageService {
     private init() {}
     
     // MARK: - Public Methods
-    func fetchProfileImageURL(userName: String, completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchProfileImageURL(userName: String, useMockDataIn testMode: Bool, completion: @escaping (Result<String, Error>) -> Void) {
+        guard testMode == false else {
+            let URLString = MockDataProfile().urlString
+            avatarURL = URL(string: URLString)
+            NotificationCenter.default.post(
+                name: ProfileImageService.didChangeNotification,
+                object: self,
+                userInfo: ["URL": URLString])
+            completion(.success(URLString))
+            return
+        }
         assert(Thread.isMainThread)
         
         guard let request = makeFetchProfileImageRequest(userName: userName) else {
